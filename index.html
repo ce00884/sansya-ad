@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SNS広告 犬山市 子育て支援</title>
+  <style>
+    /* CSSは前のコードと同一です（幅拡張、縦長解消、スクロール、インタラクション全て維持） */
+    
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background-color: #e9e9e9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; 
+      margin: 0; 
+    }
+
+    /* ===== iPhoneフレーム ===== */
+    .iphone-frame {
+      width: 480px; 
+      height: 90vh; 
+      max-width: 90%; 
+      background: #fff;
+      border: 10px solid #e5e5e5;
+      border-radius: 50px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+      overflow: hidden; 
+      position: relative;
+      flex-shrink: 0;
+      display: flex; 
+      flex-direction: column; 
+    }
+
+    /* ===== ダイナミックアイランド ===== */
+    .dynamic-island {
+      width: 130px;
+      height: 38px;
+      background: #000;
+      border-radius: 20px;
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 12;
+    }
+
+    /* ===== 投稿全体（スクロール領域） ===== */
+    .ad-container-wrapper {
+      position: relative;
+      z-index: 1;
+      margin-top: 0;
+      flex-grow: 1; 
+      height: 100%; 
+      overflow-y: auto; 
+      padding-top: 55px; 
+      box-sizing: border-box;
+      padding-bottom: 0;
+    }
+    
+    .ad-container-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .insta-ad-card {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 5px; 
+    }
+
+    /* ===== アカウント名ヘッダー ===== */
+    .ad-header {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      position: sticky; 
+      top: 0;
+      background-color: #fff; 
+      z-index: 10; 
+      border-bottom: 1px solid #eee;
+    }
+
+    .profile-pic {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .username {
+      font-weight: bold;
+      margin-right: auto;
+    }
+
+    .ad-label {
+      color: gray;
+      font-size: 13px;
+    }
+
+    /* ===== スワイプ可能なスライダー (画像表示部分) ===== */
+    .insta-slider-wrapper {
+      width: 100%;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      display: flex;
+      line-height: 0; 
+      aspect-ratio: 1 / 1; 
+      height: unset; 
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .insta-slider-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .insta-slide-image {
+      width: 100%;
+      height: 100%; 
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      display: block;
+      object-fit: contain; 
+    }
+
+    /* ===== アクションアイコン ===== */
+    .ad-actions {
+      padding: 10px 12px;
+      font-size: 24px;
+      display: flex;
+      justify-content: space-between; 
+      align-items: center;
+    }
+
+    .action-group-left {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .action-icon {
+      cursor: pointer;
+      font-weight: normal; 
+      color: #000; 
+      user-select: none;
+    }
+
+    .action-icon.liked {
+      color: red;
+      font-weight: bold; 
+    }
+
+    .ad-caption {
+      padding: 10px 12px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .username-in-caption {
+      font-weight: bold;
+      margin-right: 6px;
+    }
+
+    .hashtag {
+      color: #1E90FF;
+      cursor: pointer;
+      display: inline-block;
+      margin-right: 5px;
+      font-weight: 500;
+    }
+
+    .hashtag:hover {
+      text-decoration: underline;
+    }
+
+    .cta-button {
+      display: block;
+      text-align: center;
+      background: #0095f6;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 12px;
+      margin: 12px;
+      border-radius: 10px;
+    }
+
+    .cta-button:hover {
+      background: #007acc;
+    }
+    
+    /* ===== 下部ナビゲーションバー ===== */
+    .insta-nav {
+        width: 100%;
+        height: 50px; 
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-shrink: 0; 
+        z-index: 20; 
+    }
+
+    .nav-icon {
+        font-size: 24px;
+        color: #000;
+        cursor: pointer;
+        padding: 5px;
+        font-weight: 500; 
+    }
+
+    /* アクティブなアイコンは塗りつぶしにする（ホームがアクティブな状態） */
+    .nav-icon.active {
+        /* 元のアイコンが塗りつぶしの場合、このCSSで強調 */
+        font-weight: 900; 
+    }
+  </style>
+</head>
+<body>
+
+  <div class="iphone-frame">
+    <div class="dynamic-island"></div> 
+
+    <div class="ad-container-wrapper">
+      
+      <div class="insta-ad-card">
+        
+        <div class="ad-header">
+          <img src="./images/ad4.png" alt="プロフィール画像" class="profile-pic">
+          <span class="username">@promotion+</span>
+          <span class="ad-label">広告</span>
+        </div>
+
+        <div class="insta-slider-wrapper">
+          <img src="./images/ad1.png" alt="スライド1" class="insta-slide-image">
+          <img src="./images/ad2.png" alt="スライド2" class="insta-slide-image">
+          <img src="./images/ad3.png" alt="スライド3" class="insta-slide-image">
+        </div>
+
+        <div class="ad-actions">
+          <div class="action-group-left">
+            <span id="like-button" class="action-icon">♡</span> 
+            <span class="action-icon">💬</span> <span class="action-icon">✈️</span> </div>
+          
+          <div class="action-group-right">
+            <span class="action-icon">🔖</span> </div>
+        </div>
+
+        <div class="ad-caption">
+          <span class="username-in-caption">@promotion+</span>
+          <span class="caption-text">
+            <strong>【犬山は子育てのパラダイス】</strong><br>
+            犬山市では、未来を担う子どもたちの成長をまち全体で支えています。<br>
+            保育環境の整備、子育て相談窓口の充実、<br>
+            そして働くパパ・ママを支える支援制度も進化中。<br><br>
+            “安心して産み、育てられるまち” へ。<br>
+            <span class="hashtag">#犬山市</span>
+            <span class="hashtag">#子育て支援</span>
+            <span class="hashtag">#安心のまち</span>
+            <span class="hashtag">#未来を育てる</span>
+          </span>
+        </div>
+
+        <a href="#" class="cta-button">詳しく見る</a>
+        
+      </div>
+      
+    </div> 
+    
+    <div class="insta-nav">
+        <span class="nav-icon active">🏠</span> <span class="nav-icon">🔍</span> <span class="nav-icon">➕</span> <span class="nav-icon">♡</span> <span class="nav-icon">👤</span> </div>
+  </div>
+
+  <script>
+    // JavaScriptでいいね機能を実装
+    document.getElementById('like-button').addEventListener('click', function() {
+        const button = this;
+        
+        if (button.classList.contains('liked')) {
+            button.classList.remove('liked');
+            button.textContent = '♡'; 
+        } else {
+            button.classList.add('liked');
+            button.textContent = '❤️'; 
+        }
+    });
+  </script>
+
+</body>
+</html>
